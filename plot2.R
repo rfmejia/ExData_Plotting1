@@ -12,13 +12,11 @@ data.filename <- "household_power_consumption.txt"
 # convert to NA
 dt <- fread(data.filename, sep=";", header=TRUE, na.strings = c("?"), 
             colClasses = rep("character", 9))
-dt$DateTime <- strptime(paste(as.character(dt$Date), dt$Time), format = "%Y-%m-%d %H:%M:%S")
 setkey(dt)
 
 dt <- dt[Date == "1/2/2007" | Date == "2/2/2007"]
 
-#dt[,Date := as.Date(Date)]
-set(dt, j="Date", value=lapply(dt[,Date], as.Date))
+dt[,Date := as.Date(Date)]
 set(dt, j="Time", value=lapply(dt[,Time], strptime, format="%T"))
 dt[,Global_active_power := as.numeric(Global_active_power)]
 dt[,Global_reactive_power := as.numeric(Global_reactive_power)]
@@ -29,5 +27,5 @@ dt[,Sub_metering_2 := as.numeric(Sub_metering_2)]
 dt[,Sub_metering_3 := as.numeric(Sub_metering_3)]
 
 png(filename = "plot2.png", width = 480, height = 480)
-plot(dt$Date, dt$Global_active_power, type = "l", ylab = "Global Active Power (kilowatts)", main = "Global Active Power")
+plot(dt$Global_active_power, type = "l", ylab = "Global Active Power (kilowatts)", main = "Global Active Power")
 dev.off()
